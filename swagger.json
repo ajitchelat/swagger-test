@@ -1,49 +1,18 @@
-parameters:
+---
+components:
+  parameters:
     action:
+      description: ''
       in: query
       name: action
-      description: ""
       required: false
       schema:
         enum:
-         - Force
-         - Import
-         - Switch
-         - apply
-         - check
-         - clear
-         - convert
-         - create
-         - diff
-         - disable
-         - enable
-         - expire
-         - export
-         - flush
-         - init
-         - join
-         - kill
-         - link
-         - release
-         - rename
-         - renumber
-         - reset
-         - restart
-         - restore
-         - save
-         - send
-         - sign
-         - sync
-         - unlink
-         - unlock
-         - unset
-         - unsign
-         - update
+          - unset
         type: string
-
-
     args:
       allowReserved: true
+      description: 'sortby:String,detail:Boolean,sortorder:String,name:String,fullvalues:Boolean,logfile:String,clearstats:String,ntimes:Double,'
       in: query
       name: args
       required: false
@@ -70,10 +39,10 @@ parameters:
       name: count
       required: false
       schema:
-        type: string
         enum:
-         - yes
-         - no
+          - yes
+          - no
+        type: string
     entityname:
       in: query
       name: entityname
@@ -168,3 +137,141 @@ parameters:
           - yes
           - no
         type: string
+  schemas:
+    aaacertparams:
+      additionalProperties: true
+      properties:
+        defaultauthenticationgroup:
+          description: |-
+            | 
+            	This is the default group that is chosen when the authentication succeeds in addition to extracted groups.
+          maxLength: 64
+          type: string
+        groupnamefield:
+          description: |-
+            | 
+            	Client certificate field that specifies the group, in the format <field>:<subfield>.
+          type: string
+        twofactor:
+          description: |-
+            | 
+            	The state of the two-factor authentication.
+          readOnly: true
+          type: string
+        usernamefield:
+          description: |-
+            | 
+            	Client certificate field that contains the username, in the format <field>:<subfield>. 
+          type: string
+      type: object
+    apiresponse:
+      properties:
+        error_code:
+          type: integer
+        message:
+          type: string
+        severity:
+          type: string
+      type: object
+  securitySchemes:
+    password:
+      in: header
+      name: X-NITRO-PASS
+      type: apiKey
+    username:
+      in: header
+      name: X-NITRO-USER
+      type: apiKey
+info:
+  title: Nitro API Specification for aaacertparams
+  version: v1
+openapi: 3.0.0
+paths:
+  /aaacertparams:
+    get:
+      operationId: describe_all_aaacertparams
+      parameters:
+        - $ref: '#/components/parameters/args'
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/apiresponse'
+                  - $ref: '#/components/schemas/aaacertparams'
+                example:
+                  aaacertparams:
+                    - '<check_schema_for_complete_items>'
+          description: Ok
+      security:
+        - username: []
+        - password: []
+      summary: Get the details/count of all aaacertparams  entities
+      tags:
+        - aaacertparams
+    post:
+      operationId: unset_aaacertparams
+      parameters:
+        - $ref: '#/components/parameters/action'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                aaacertparams:
+                  allOf:
+                    - $ref: '#/components/schemas/aaacertparams'
+        description: request payload for configuring  the given entity
+        required: true
+      responses:
+        201:
+          description: Ok
+      security:
+        - username: []
+        - password: []
+      summary: unset_aaacertparams
+      tags:
+        - aaacertparams
+    put:
+      operationId: update_aaacertparams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                aaacertparams:
+                  allOf:
+                    - $ref: '#/components/schemas/aaacertparams'
+        description: request payload for configuring  the given entity
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/apiresponse'
+                  - $ref: '#/components/schemas/aaacertparams'
+                example:
+                  errorcode: 0
+                  message: Done
+                  severity: None
+          description: Ok
+      security:
+        - username: []
+        - password: []
+      summary: update_aaacertparams
+      tags:
+        - aaacertparams
+servers:
+  - url: '{protocol}:/nitro/v1/config'
+    variables:
+      protocol:
+        default: http
+        enum:
+          - http
+          - https
+tags:
+  - description: The details of configured entities
+    name: aaacertparams
